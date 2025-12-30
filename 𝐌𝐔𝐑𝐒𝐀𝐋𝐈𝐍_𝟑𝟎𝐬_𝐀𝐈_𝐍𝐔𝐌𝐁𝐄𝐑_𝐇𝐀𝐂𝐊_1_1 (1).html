@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>𝐌𝐔𝐑𝐒𝐀𝐋𝐈𝐍 𝟑𝟎𝐬 𝐀𝐈 𝐍𝐔𝐌𝐁𝐄𝐑 𝐇𝐀𝐂𝐊</title>
+
+<style>
+html,body{
+  margin:0; padding:0; height:100%; overflow:hidden;
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:#000;
+}
+iframe{width:100%;height:100vh;border:none}
+
+/* ===== PASSWORD ===== */
+.lock{
+  position:fixed; inset:0;
+  background:radial-gradient(circle,#000 40%,#1a1300);
+  color:#FFD700;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10000;
+}
+.lock input{
+  padding:12px; font-size:16px; width:220px;
+  border-radius:10px; border:none; text-align:center;
+}
+.lock button{
+  margin-top:10px; padding:10px 25px;
+  font-size:16px; border:none; border-radius:10px;
+  background:linear-gradient(145deg,#ffd700,#caa84a);
+  font-weight:bold;
+}
+.lock .err{color:#ff4d4d;margin-top:8px}
+
+/* ===== OVERLAY ===== */
+.overlay{
+  position:fixed; top:100px; right:20px;
+  width:260px;
+  background:linear-gradient(145deg,#0b0b0b,#1a1a1a);
+  color:#fff; padding:16px; border-radius:16px;
+  z-index:9999; display:none;
+  border:1.5px solid #caa84a;
+  box-shadow:inset 0 0 12px rgba(255,215,0,.12),
+             0 10px 30px rgba(0,0,0,.6);
+}
+.header{
+  display:flex; justify-content:space-between;
+  font-size:14px; margin-bottom:6px;
+}
+.header button{
+  background:#222; color:#FFD700;
+  border:none; padding:4px 10px; border-radius:8px;
+}
+.signal{
+  font-size:30px; font-weight:bold;
+  text-align:center; margin-top:6px;
+}
+.big{color:#ff4d4d}
+.small{color:#4dff9d}
+.violet{color:#c77dff}
+
+.timer{
+  text-align:center; font-size:14px;
+  color:#ccc; margin-top:4px;
+}
+.history{
+  margin-top:10px; background:#111;
+  padding:6px; border-radius:10px;
+  font-size:14px;
+}
+.history div{
+  border-bottom:1px solid #222; padding:3px 0;
+}
+.btn{
+  display:block; margin-top:10px; padding:10px;
+  text-align:center; font-weight:bold;
+  color:#000;
+  background:linear-gradient(145deg,#ffd700,#caa84a);
+  border-radius:10px; text-decoration:none;
+}
+.bubble{
+  position:fixed; top:120px; right:20px;
+  background:#000; color:#FFD700;
+  padding:12px; border-radius:50%;
+  display:none; z-index:9999;
+  border:1px solid #caa84a;
+}
+
+/* ===== GLOW ===== */
+@keyframes ringGreen{
+  0%{box-shadow:0 0 0 0 rgba(0,255,140,.35)}
+  50%{box-shadow:0 0 0 6px rgba(0,255,140,.55)}
+  100%{box-shadow:0 0 0 0 rgba(0,255,140,.35)}
+}
+@keyframes ringRed{
+  0%{box-shadow:0 0 0 0 rgba(255,70,70,.35)}
+  50%{box-shadow:0 0 0 6px rgba(255,70,70,.55)}
+  100%{box-shadow:0 0 0 0 rgba(255,70,70,.35)}
+}
+@keyframes ringViolet{
+  0%{box-shadow:0 0 0 0 rgba(199,125,255,.35)}
+  50%{box-shadow:0 0 0 6px rgba(199,125,255,.6)}
+  100%{box-shadow:0 0 0 0 rgba(199,125,255,.35)}
+}
+.overlay.glow-small{animation:ringGreen 1.4s infinite}
+.overlay.glow-big{animation:ringRed 1.4s infinite}
+.overlay.glow-violet{animation:ringViolet 1.4s infinite}
+</style>
+</head>
+
+<body>
+
+<iframe src="https://www.amarclub1.com/#/register?invitationCode=453631088369"></iframe>
+
+<div class="lock" id="lock">
+  <h2>VIP ACCESS</h2>
+  <input id="pwd" type="password" placeholder="Enter Password">
+  <button onclick="unlock()">Unlock</button>
+  <div class="err" id="err"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="header">
+    <span>VIP Signal</span>
+    <button onclick="minimize()">Minimize</button>
+  </div>
+  <div id="signal" class="signal">--</div>
+  <div id="timer" class="timer">--</div>
+  <div id="history" class="history"></div>
+  <a class="btn" href="https://t.me/+LTOBdetJGN5lMzVl" target="_blank">Join Telegram</a>
+</div>
+
+<div class="bubble" id="bubble" onclick="restore()">𝐌𝐔𝐑𝐒𝐀𝐋𝐈𝐍 𝟑𝟎𝐬 𝐀𝐈 𝐍𝐔𝐌𝐁𝐄𝐑 𝐇𝐀𝐂𝐊</div>
+
+<script>
+const PASSWORD="TIGRO_ADMIN_MURSALIN_VAI";
+function unlock(){
+  if(pwd.value===PASSWORD){
+    lock.style.display="none";
+    overlay.style.display="block";
+  }else err.innerText="Wrong Password";
+}
+
+function getBDTime(){
+  return new Date(
+    new Date().toLocaleString("en-US",{timeZone:"Asia/Dhaka"})
+  );
+}
+
+let history=[], lastSlot=null;
+
+function generateSignal(){
+  overlay.classList.remove("glow-big","glow-small","glow-violet");
+
+  let isBig = Math.random() < 0.5;
+  let number = isBig
+    ? Math.floor(Math.random()*5)+5   // 5–9
+    : Math.floor(Math.random()*5);    // 0–4
+
+  if(number===0 || number===5){
+    signal.className="signal violet";
+    overlay.classList.add("glow-violet");
+  }else if(isBig){
+    signal.className="signal big";
+    overlay.classList.add("glow-big");
+  }else{
+    signal.className="signal small";
+    overlay.classList.add("glow-small");
+  }
+
+  signal.innerHTML=(isBig?"BIG":"SMALL")+"<br>"+number;
+
+  let t=getBDTime().toLocaleTimeString("en-GB");
+  history.unshift(t+" - "+(isBig?"BIG":"SMALL")+" ("+number+")");
+  history=history.slice(0,3);
+  historyBox.innerHTML=history.map(i=>`<div>${i}</div>`).join("");
+}
+
+setInterval(()=>{
+  let now=getBDTime();
+  let sec=now.getSeconds();
+  let slot=Math.floor(sec/30);
+  let remain=30-(sec%30);
+  timer.innerText="Next: "+remain+"s (BD)";
+  if(slot!==lastSlot){
+    lastSlot=slot;
+    generateSignal();
+  }
+},1000);
+
+function minimize(){
+  overlay.style.display="none";
+  bubble.style.display="block";
+}
+function restore(){
+  overlay.style.display="block";
+  bubble.style.display="none";
+}
+
+/* Drag */
+let drag=false,ox,oy;
+overlay.addEventListener("mousedown",start);
+overlay.addEventListener("touchstart",start);
+function start(e){
+  drag=true;
+  let p=e.touches?e.touches[0]:e;
+  ox=p.clientX-overlay.offsetLeft;
+  oy=p.clientY-overlay.offsetTop;
+}
+document.addEventListener("mousemove",move);
+document.addEventListener("touchmove",move);
+document.addEventListener("mouseup",()=>drag=false);
+document.addEventListener("touchend",()=>drag=false);
+function move(e){
+  if(!drag)return;
+  let p=e.touches?e.touches[0]:e;
+  overlay.style.left=p.clientX-ox+"px";
+  overlay.style.top=p.clientY-oy+"px";
+}
+
+generateSignal();
+</script>
+
+</body>
+</html>
